@@ -10,4 +10,4 @@ if (!isset($_SESSION['email'])) {
 echo "Welcome, " . $_SESSION['first_name'] . " " . $_SESSION['last_name'] . "!";
 ?>
 
-<a href="../controllers/logout.php">Logout</a>
+<a href="../controllers/logout.php">Logout</a> 
