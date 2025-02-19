@@ -6,6 +6,9 @@
     <title>Student Management System</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
+    <?php 
+        include '../includes/header.php';
+    ?>
 <body>
 
     <!-- Background Video -->
@@ -15,16 +18,6 @@
             Your browser does not support the video tag.
         </video>
     </div>
-
-    <!-- Header & Navbar -->
-    <header class="header">
-        <h1>Student Management System</h1>
-        <nav class="navbar">
-            <a href="../models/login.php">Login</a>
-            <a href="../models/register.php">Register</a>
-            <a href="../models/about.php">About</a>
-        </nav>
-    </header>
 
     <!-- Content Wrapper for Content Boxes -->
     <div class="content-wrapper">
@@ -46,10 +39,9 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 Student Management System. All rights reserved.</p>
-    </footer>
+   <?php 
+        include '../includes/footer.php';
+   ?>
 
 </body>
 </html>
