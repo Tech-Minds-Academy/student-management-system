@@ -3,6 +3,7 @@
 
 <?php
 $routes = [
+    'homepage' => 'public/index.php',
     'register' => 'views/register.php',
     'login' => 'views/login.php',
     'dashboard' => 'views/dashboard.php'

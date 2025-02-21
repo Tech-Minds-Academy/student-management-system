@@ -2,13 +2,20 @@
 <!-- this is used to store and display the Login form and details of the user -->
 
 <?php
-session_start();
-include '../config/db_connection.php';
+if(session_status() == PHP_SESSION_NONE) {
+   session_start();
+}
+
+include '../config/database.php';
+include '../controllers/AuthController.php';
+
+$auth = new AuthController();
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $message = $auth->login($email, $password);
 
     // Prepare the SQL statement to be executed
     $sql = "SELECT * FROM users WHERE email = ?";

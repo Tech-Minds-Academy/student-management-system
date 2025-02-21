@@ -2,7 +2,8 @@
 <!-- this is used to store and display the registration form and details of the user -->
 
 <?php
-include '../config/db_connection.php'; // Include the database connection file
+include '../config/database.php'; // Include the database connection file
+include '../controllers/AuthController.php'; // Include the queries file
 
       //check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -11,11 +12,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $phone_number = $_POST['phone_number'];
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT); // Hash the password in a crypt format
-
+    $role = $_POST['role'];
     // Prepare the SQL statement
     $sql = "INSERT INTO users (first_name, last_name, email, phone_number, password) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssss", $first_name, $last_name, $email, $phone_number, $password);
+    $stmt->bind_param("sssss", $first_name, $last_name, $email, $phone_number, $password, $role);
 
     // Execute the statement
     if ($stmt->execute()) {
