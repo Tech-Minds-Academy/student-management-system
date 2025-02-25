@@ -13,7 +13,7 @@
         <p>Our mission is to provide a reliable and intuitive system that enhances productivity in educational institutions.</p>
     </div>
     <div class="cta">
-        <p>Ready to get started? <a href="register.php" style="color: purple; text-decoration: underline;">Create an account</a> or <a href="login.php" style="color: purple; text-decoration: underline;">log in</a> to access the Student Management System.</p>
+        <p>Ready to get started? <a href="#" style="color: purple; text-decoration: underline;">Create an account</a> or <a href="#" style="color: purple; text-decoration: underline;">log in</a> to access the Student Management System.</p>
     </div>
 </body>
 </html>
