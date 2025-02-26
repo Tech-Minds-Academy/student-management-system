@@ -1,4 +1,4 @@
-/* <?php
+<?php
 
 session_start();
 include '../config/database.php';
@@ -42,4 +42,4 @@ class Student {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
-?> -->
+?> 
