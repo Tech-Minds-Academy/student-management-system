@@ -1,0 +1,35 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /student-management-system/user-dashboard/
+    
+    # Protect sensitive files
+    RewriteRule ^config/.* - [F,L]
+    RewriteRule ^includes/.* - [F,L]
+    
+    # Ensure direct access to allowed files
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Protect against file uploads in uploads directory
+<FilesMatch "(?i)\.(php|php3?|phtml|js)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Allow only images in uploads directory
+<FilesMatch "(?i)\.(gif|jpe?g|png)$">
+    Order Deny,Allow
+    Allow from all
+</FilesMatch>
+
+# Additional security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule> 
