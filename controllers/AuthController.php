@@ -10,6 +10,8 @@ if (session_status() == PHP_SESSION_NONE) {
 include '../config/database.php';
 include '../config/queries.php';
 include '../controllers/StudentController.php';
+// $database = new Database();
+// $conn = $database->getConnection();
 
 // AuthController class
 class AuthController {

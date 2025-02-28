@@ -1,17 +1,22 @@
-<!-- Database Connection -->
-<!-- this is used to store database connection details -->
-<!-- this file is included in all the files where database connection is required -->
 <?php
-$host = "localhost"; // Database Host name
-$user = "root"; // Database Username
-$password = ""; // Database Password
-$database = "student_management_system"; // Database Name
+class Database {
+    private $host = "localhost";
+    private $db_name = "student_management_system";
+    private $username = "root";
+    private $password = "";
+    private $conn;
 
-// Create database connection
-$conn = new mysqli($host, $user, $password, $database);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    public function getConnection() {
+        $this->conn = null;
+        try {
+            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $exception) {
+            echo "Connection error: " . $exception->getMessage();
+        }
+        return $this->conn;
+    }
 }
+$db = new Database();
+$conn = $db->getConnection();
 ?>
