@@ -1,4 +1,3 @@
-
 <?php
 class Database {
     private $host = "localhost";
@@ -18,4 +17,6 @@ class Database {
         return $this->conn;
     }
 }
+$db = new Database();
+$conn = $db->getConnection();
 ?>
