@@ -55,6 +55,12 @@ student-management-system/
 │── CONTRIBUTING.md         # Contribution guidelines
 ```
 
+```
+   Database -> models -> controllers -> views
+
+   Views (fetch/post) -> controllers (Do some checks and work ) -> models (SQL queries) -> Database.
+```
+
 ### Key Points:
 - **Separation of concerns**: Logic (`controllers/`), database interactions (`models/`), and UI (`views/`) are neatly separated.
 - **`config/` folder**: Centralized database and app settings.
