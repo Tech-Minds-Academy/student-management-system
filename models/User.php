@@ -68,35 +68,22 @@ class User {
         return false;
     }
 
-    public function login($username, $password) {
-        $query = "SELECT id, username, password_hash FROM " . $this->table_name . " WHERE username = ?";
+    public function login($email, $password) {
+        $query = "SELECT id, name, email, password, role, profile_picture FROM " . $this->table_name . " WHERE email = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute([$username]);
-        
-        if($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if(password_verify($password, $row['password_hash'])) {
-                return $row;
-            }
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
         }
         return false;
     }
 
-    public function logActivity($user_id, $activity_type) {
-        $query = "INSERT INTO user_activity_log 
-                (user_id, activity_type, ip_address, user_agent) 
-                VALUES (:user_id, :activity_type, :ip_address, :user_agent)";
-        
+    public function logActivity($userId, $action) {
+        $query = "INSERT INTO user_activity (user_id, action, created_at) VALUES (?, ?, NOW())";
         $stmt = $this->conn->prepare($query);
-        
-        $ip_address = $_SERVER['REMOTE_ADDR'];
-        $user_agent = $_SERVER['HTTP_USER_AGENT'];
-        
-        $stmt->bindParam(":user_id", $user_id);
-        $stmt->bindParam(":activity_type", $activity_type);
-        $stmt->bindParam(":ip_address", $ip_address);
-        $stmt->bindParam(":user_agent", $user_agent);
-        
-        return $stmt->execute();
+        return $stmt->execute([$userId, $action]);
     }
 
     public function getUserSettings($user_id) {
@@ -119,5 +106,11 @@ class User {
         $stmt->bindParam(":user_id", $user_id);
         
         return $stmt->execute();
+    }
+
+    public function updateLastLogin($userId) {
+        $query = "UPDATE " . $this->table_name . " SET last_login = NOW() WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([$userId]);
     }
 } 

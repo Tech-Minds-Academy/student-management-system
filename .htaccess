@@ -1,10 +1,15 @@
 # Enable URL rewriting
 RewriteEngine On
+RewriteBase /
 
-# Redirect all requests to index.php
+# Redirect everything to public directory
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/$1 [L]
+
+# Handle PHP files
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /public/index.php [L,QSA]
+RewriteRule ^(.*)$ public/index.php [L]
 
 # Set the default timezone
 SetEnv TZ America/New_York
@@ -22,3 +27,9 @@ Header set Access-Control-Allow-Headers "Content-Type, Authorization"
 
 # Disable directory browsing
 Options -Indexes
+
+# PHP settings
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value max_input_time 300
