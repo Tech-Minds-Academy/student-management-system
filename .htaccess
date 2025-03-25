@@ -1,0 +1,25 @@
+# Enable URL rewriting
+RewriteEngine On
+
+# Redirect all requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /public/index.php/$1 [L,QSA]
+# RewriteRule ^(.*)$ /public/index.php [L,QSA]
+
+# Set the default timezone
+SetEnv TZ America/New_York
+
+# Deny access to .htaccess file
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Enable CORS
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+
+# Disable directory browsing
+Options -Indexes
