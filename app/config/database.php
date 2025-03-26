@@ -5,7 +5,7 @@ class Database {
     private $username = "root";
     private $password = "";
     private $conn;
-
+    
     public function getConnection() {
         $this->conn = null;
         try {
@@ -17,6 +17,6 @@ class Database {
         return $this->conn;
     }
 }
-$db = new Database();
+$db = new Database(); 
 $conn = $db->getConnection();
 ?>

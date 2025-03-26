@@ -13,7 +13,7 @@ class AuthController {
         $this->userModel = new UserModel();
     }
 
-    public function register($first_name, $last_name, $email, $phone, $password, $role = 'User') {
+    public function register($first_name, $last_name, $email, $phone, $password, $role = 'user') {
         return $this->userModel->createUser($first_name, $last_name, $email, $phone, $password, $role) ? 
             "User registered successfully!" : "Error: Could not register user.";
     }
@@ -28,12 +28,7 @@ class AuthController {
             $_SESSION['email'] = $user['email'];
             $_SESSION['phone'] = $user['phone'];
             $_SESSION['role'] = $user['role']; // Store the user's role in the session
-
-            if ($user['role'] == 'Admin') {
-                header("Location: ../views/Admin/admin_dashboard.php");
-            } else {
-                header("Location: ../views/dashboard.php");
-            }
+            header("Location: ../views/user/profile.php");
             exit();
         } else {
             return "Invalid email or password!";
