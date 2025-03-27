@@ -1,9 +1,16 @@
 <?php
-session_start();
-include '../../config/database.php';
-include '../../controllers/AuthController.php';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
-$auth = new AuthController();
+if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
+    header("Location: ../../auth/login.php");
+    exit();
+}
+
+require_once __DIR__ . '/../../controllers/AdminAuthController.php';
+
+$auth = new AdminAuthController();
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
