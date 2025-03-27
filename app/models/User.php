@@ -23,7 +23,7 @@ class UserModel {
         return $user;
     }
 
-    public function getAllUsers() {
+    public function getAllUser() {
         global $conn;
         $sql = "SELECT * FROM users";
         $stmt = $conn->prepare($sql);
@@ -55,7 +55,7 @@ class UserModel {
         $stmt->bind_param("ssss", $searchTerm, $searchTerm, $searchTerm, $searchTerm);
         $stmt->execute();
         $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $result->fetch_all(MYSQLI_ASSOC); // Fetch and Return all rows as an associative array
     }
 }
 ?>

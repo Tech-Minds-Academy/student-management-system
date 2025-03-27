@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/../app/models/User.php';
-//
+
 class AuthController {
     private $userModel;
 
@@ -41,8 +41,10 @@ class AuthController {
         exit();
     }
 
-    public function getAllUsers() {
-        return $this->userModel->getAllUsers();
+    // Corrected getAllUser method
+    public function getAllUser() {
+        $users = $this->userModel->getAllUser();
+        return $users ? $users : "Error: Could not retrieve the list of users.";
     }
 
     public function updateUser($id, $first_name, $last_name, $email, $phone) {

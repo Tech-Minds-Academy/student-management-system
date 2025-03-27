@@ -11,14 +11,5 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
 require_once __DIR__ . '/../../controllers/AdminAuthController.php';
 
 $auth = new AdminAuthController();
-$message = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = $_POST['id'];
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $message = $auth->updateUser($id, $first_name, $last_name, $email, $phone);
-}
+$users = $auth->getAllUser();
 ?>

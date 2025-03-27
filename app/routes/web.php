@@ -26,15 +26,15 @@ $router->addRoute('/dashboard', 'UserController@dashboard');
 // Admin routes - the admin dashboard page
 $router->addRoute('/admin/dashboard', 'AdminAuthController@dashboard');
 // The page to list all users
-$router->addRoute('/admin/list-users', 'AdminAuthController@listUsers');
+$router->addRoute('/admin/getAllUsers', 'AdminAuthController@getAllUsers');
 // The page to create a new user
-$router->addRoute('/admin/create-user', 'AdminAuthController@createUser');
+$router->addRoute('/admin/createUser', 'AdminAuthController@createUser');
 // The page to update a user details
-$router->addRoute('/admin/update-user', 'AdminAuthController@updateUser');
+$router->addRoute('/admin/updateUser', 'AdminAuthController@updateUser');
 // The page to delete a user
-$router->addRoute('/admin/delete-user', 'AdminAuthController@deleteUser');
+$router->addRoute('/admin/deleteUser', 'AdminAuthController@deleteUser');
 // The page to search for a users
-$router->addRoute('/admin/search-user', 'AdminAuthController@searchUser');
+$router->addRoute('/admin/searchUser', 'AdminAuthController@searchUser');
 
 // Logout route - Logs out the user
 $router->addRoute('/logout', 'AuthController@logout');

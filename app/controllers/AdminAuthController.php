@@ -9,7 +9,7 @@ require_once __DIR__ . '/../models/User.php';
 class AdminAuthController {
     private $userModel;
 
-// Initialize the User model
+    // Initialize the User model
     public function __construct() {
         $this->userModel = new UserModel(); // Create an instance of the UserModel class
     }
@@ -53,13 +53,20 @@ class AdminAuthController {
     }
 
     // List all users
-    public function listUser() {
-        if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
-            header("Location: ../views/login.php");
-            exit();
-        }
-        $users = $this->userModel->getAllUsers();
-        include __DIR__ . '/../views/admin/list-user.php';
+   public function getAllUser() {
+    if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
+        header("Location: ../views/login.php");
+        exit();
+    }
+
+    // Fetch all users from the UserModel
+    return $this->userModel->getAllUser();
+}
+
+    // Register a new user
+    public function register($first_name, $last_name, $email, $phone, $password, $role) {
+        return $this->userModel->createUser($first_name, $last_name, $email, $phone, $password, $role) ?
+            "User registered successfully!" : "Error: Could not register user.";
     }
 
     // Create a new user
@@ -78,8 +85,7 @@ class AdminAuthController {
             $phone = $_POST['phone'];
             $password = $_POST['password'];
             $role = $_POST['role'];
-            $message = $this->userModel->createUser($first_name, $last_name, $email, $phone, $password, $role) ?
-                "User created successfully!" : "Error: Could not create user.";
+            $message = $this->register($first_name, $last_name, $email, $phone, $password, $role);
         }
         include __DIR__ . '/../views/admin/create-user.php';
     }
@@ -98,26 +104,22 @@ class AdminAuthController {
             $last_name = $_POST['last_name'];
             $email = $_POST['email'];
             $phone = $_POST['phone'];
-            $message = $this->userModel->updateUser($id, $first_name, $last_name, $email, $phone) ?
+        return $this->userModel->updateUser($id, $first_name, $last_name, $email, $phone) ?
                 "User updated successfully!" : "Error: Could not update user.";
         }
         include __DIR__ . '/../views/admin/update-user.php';
     }
 
     // Delete a user
-    public function deleteUser() {
+    public function deleteUser($id) {
         if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
             header("Location: ../views/login.php");
             exit();
         }
-
-        $message = ""; // Initialize the message variable
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $id = $_POST['id'];
-            $message = $this->userModel->deleteUser($id) ?
-                "User deleted successfully!" : "Error: Could not delete user.";
-        }
-        include __DIR__ . '/../views/admin/delete-user.php';
+    
+        // Call the UserModel's deleteUser method and return a message
+        return $this->userModel->deleteUser($id) ?
+            "User deleted successfully!" : "Error: Could not delete user.";
     }
 
     // Search for users
@@ -130,7 +132,7 @@ class AdminAuthController {
         $users = []; // Initialize the users array
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $searchTerm = $_POST['search'];
-            $users = $this->userModel->searchUsers($searchTerm);
+        return $this->userModel->searchUser($searchTerm);
         }
         include __DIR__ . '/../views/admin/search-user.php';
     }
