@@ -14,6 +14,7 @@ class AuthController {
     }
 
     public function register($first_name, $last_name, $email, $phone, $password, $role = 'user') {
+        $password = password_hash($password, PASSWORD_DEFAULT);
         return $this->userModel->createUser($first_name, $last_name, $email, $phone, $password, $role) ? 
             "User registered successfully!" : "Error: Could not register user.";
     }
