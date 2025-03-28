@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management System</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
-</head>
 <?php
-include '../../includes/header.php';
+include dirname(__DIR__, 2) . '/includes/header.php';
 ?>
 
 <body>
+    <?php
+    // include '../../includes/header.php';
+    include dirname(__DIR__, 2) . '/includes/heading.php';
+    ?>
 
     <!-- Background Video -->
     <div class="background">
         <video autoplay muted loop>
-            <source src="../../assets/images/bacground.mp4" type="video/mp4">
+            <source src="app/assets/images/bacground.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -52,7 +50,7 @@ include '../../includes/header.php';
     </div>
 
     <?php
-    include '../../includes/footer.php';
+    include dirname(__DIR__, 2) . '/includes/footer.php';
     ?>
 
 </body>

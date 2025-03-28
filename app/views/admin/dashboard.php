@@ -57,7 +57,6 @@
                             <a href="#">
                                 <i class="fas fa-envelope"></i>
                                 <span>Messages</span>
-                                <span class="badge">2</span>
                             </a>
                         </li>
                         <li class="nav-item" data-page="add-student">
@@ -96,7 +95,6 @@
                 <div class="top-bar-actions">
                     <button class="notification-btn" id="notification-btn">
                         <i class="fas fa-bell"></i>
-                        <span class="badge">3</span>
                     </button>
                     <div class="user-dropdown">
                         <button class="user-btn">
@@ -171,7 +169,7 @@
                 <div class="page-header">
                     <h1>Students</h1>
                     <button class="primary-btn">
-                        <i class="fas fa-plus"></i> Add Student
+                        <i class="fas fa-plus"></i> <a href="#add-student">Add Student</a>
                     </button>
                 </div>
                 
@@ -370,10 +368,6 @@
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <button class="pagination-btn active">1</button>
-                    <!-- <button class="pagination-btn">2</button>
-                    <button class="pagination-btn">3</button>
-                    <span class="pagination-ellipsis">...</span>
-                    <button class="pagination-btn">10</button> -->
                     <button class="pagination-btn">
                         <i class="fas fa-chevron-right"></i>
                     </button>

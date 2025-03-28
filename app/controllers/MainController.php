@@ -1,7 +1,7 @@
 <?php
 class MainController
 {
-    public function home()
+    public function index()
     {
         // handle login logic
         include __DIR__ . '/../views/home/index.php';
