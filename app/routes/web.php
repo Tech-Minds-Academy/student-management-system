@@ -1,19 +1,8 @@
 <?php
-$router->addRoute('/', 'HomeController@index');
-$router->addRoute('/home', 'HomeController@index');
-$router->addRoute('/login', 'AuthController@login');
-$router->addRoute('/register', 'AuthController@register');
-// $router->addRoute('/dashboard', 'DashboardController@index');
-$router->addRoute('/profile', 'UserController@profile');
-// /admin
-
-?>
-
-<?php
 // Public routes
-$router->addRoute('/', 'HomeController@index');
+$router->addRoute('/', 'MainController@index');
 // Another route for the home page
-$router->addRoute('/home', 'HomeController@index');
+$router->addRoute('/home', 'MainController@index');
 // The login page
 $router->addRoute('/login', 'AuthController@login');
 // The registration page

@@ -1,12 +1,14 @@
 <?php
-class Database {
-    private $host = "localhost";
-    private $db_name = "student_management_system";
-    private $username = "root";
-    private $password = "";
+class Database
+{
+    private $host = getenv('DATABASE_HOST', 'localhost');
+    private $db_name = getenv("DATABASE_NAME", "student_management_system");
+    private $username = getenv('DATABASE_USERNAME', 'root');
+    private $password = getenv('DATABASE_PASSWORD', '');
     private $conn;
-    
-    public function getConnection() {
+
+    public function getConnection()
+    {
         $this->conn = null;
         try {
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
@@ -17,6 +19,6 @@ class Database {
         return $this->conn;
     }
 }
-$db = new Database(); 
+$db = new Database();
 $conn = $db->getConnection();
 ?>

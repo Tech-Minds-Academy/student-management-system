@@ -4,12 +4,15 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../app/models/User.php';
+require_once dirname(__DIR__, 1) . '/models/User.php';
 
-class AuthController {
+
+class AuthController
+{
     private $userModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->userModel = new UserModel();
     }
 
@@ -19,7 +22,8 @@ class AuthController {
             "User registered successfully!" : "Error: Could not register user.";
     }
 
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         $user = $this->userModel->login($email, $password);
 
         if ($user && password_verify($password, $user['password'])) {
@@ -36,25 +40,30 @@ class AuthController {
         }
     }
 
-    public function logout() {
+    public function logout()
+    {
         session_destroy();
         header("Location: ../views/login.php");
+        // header("Location: /login"); // Redirect to the login page
         exit();
     }
 
     // Corrected getAllUser method
-    public function getAllUser() {
+    public function getAllUser()
+    {
         $users = $this->userModel->getAllUser();
         return $users ? $users : "Error: Could not retrieve the list of users.";
     }
 
-    public function updateUser($id, $first_name, $last_name, $email, $phone) {
-        return $this->userModel->updateUser($id, $first_name, $last_name, $email, $phone) ? 
+    public function updateUser($id, $first_name, $last_name, $email, $phone)
+    {
+        return $this->userModel->updateUser($id, $first_name, $last_name, $email, $phone) ?
             "User updated successfully!" : "Error: Could not update user.";
     }
 
-    public function deleteUser($id) {
-        return $this->userModel->deleteUser($id) ? 
+    public function deleteUser($id)
+    {
+        return $this->userModel->deleteUser($id) ?
             "User deleted successfully!" : "Error: Could not delete user.";
     }
 }
