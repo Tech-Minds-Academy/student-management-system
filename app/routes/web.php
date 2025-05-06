@@ -1,8 +1,11 @@
 <?php
+
 // Public routes
 $router->addRoute('/', 'MainController@index');
 // Another route for the home page
 $router->addRoute('/home', 'MainController@index');
+// About page route
+$router->addRoute('/about', 'MainController@about');
 // The login page
 $router->addRoute('/login', 'AuthController@login');
 // The registration page
@@ -24,7 +27,8 @@ $router->addRoute('/admin/updateUser', 'AdminAuthController@updateUser');
 $router->addRoute('/admin/deleteUser', 'AdminAuthController@deleteUser');
 // The page to search for a users
 $router->addRoute('/admin/searchUser', 'AdminAuthController@searchUser');
-
+//the page for database connection
+$router->addRoute('/config/database', 'AdminAuthController@dbConnection');
 // Logout route - Logs out the user
 $router->addRoute('/logout', 'AuthController@logout');
 ?>
