@@ -1,79 +1,117 @@
 <?php
-require_once dirname(__DIR__, 1) . '/config/database.php';
+// require_once dirname(__DIR__, 1) . '/config/database.php';
+
 
 class UserModel
 {
-    public function createUser($first_name, $last_name, $email, $phone, $password, $role)
-    {
-        global $conn;
+    private $conn;
 
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-        $sql = "INSERT INTO users (first_name, last_name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(1, $first_name, PDO::PARAM_STR);
-        $stmt->bindValue(2, $last_name, PDO::PARAM_STR);
-        $stmt->bindValue(3, $email, PDO::PARAM_STR);
-        $stmt->bindValue(4, $phone, PDO::PARAM_STR);
-        $stmt->bindValue(5, $hashed_password, PDO::PARAM_STR);
-        $stmt->bindValue(6, $role, PDO::PARAM_STR);
-        return $stmt->execute();
+    // Constructor with Dependency Injection
+    public function __construct(PDO $conn)
+    {
+        $this->conn = $conn;
     }
 
-    public function login($email, $password)
+    // Create a new user
+    public function createUser($first_name, $last_name, $email, $phone, $password, $role = "user")
     {
-        global $conn;
+        $sql = "INSERT INTO users (first_name, last_name, email, phone, password, role)
+                VALUES (:first_name, :last_name, :email, :phone, :password, :role)";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            ':first_name' => $first_name,
+            ':last_name' => $last_name,
+            ':email' => $email,
+            ':phone' => $phone,
+            ':password' => $password, // Use the raw password directly
+            ':role' => $role
+        ]);
+    }
+
+    public function checkLoginDetails($email, $password)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($password == $user['password']) {
+            echo "<div style='color: green; font-weight: bold;'>✅ Login successful!</div><br>";
+            return $user;
+        } else {
+            echo "<script>alert('❌ Invalid password!');</script>";
+            return null; // Return null if login fails
+        }
+    }
+
+
+    public function checkLoginDetails_($email, $password)
+    {
         $sql = "SELECT * FROM users WHERE email = ?";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql); // Use the initialized $this->conn
         $stmt->bindValue(1, $email, PDO::PARAM_STR);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $user;
+
+        // Check if the password matches
+        if ($user && password_verify($password, $user['password'])) {
+            return $user; // Return user details if login is successful
+        } else {
+            echo "Invalid email or password!<br/>";
+            return null; // Return null if login fails
+        }
     }
 
-    public function getAllUser()
+    // Get user by email (for login)
+    public function getUserByEmail($email)
     {
-        global $conn;
-        $sql = "SELECT * FROM users";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
+        $sql = "SELECT * FROM users WHERE email = :email";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Get all users
+    public function getAllUsers()
+    {
+        $sql = "SELECT * FROM users";
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Update user
     public function updateUser($id, $first_name, $last_name, $email, $phone)
     {
-        global $conn;
-        $sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(1, $first_name, PDO::PARAM_STR);
-        $stmt->bindValue(2, $last_name, PDO::PARAM_STR);
-        $stmt->bindValue(3, $email, PDO::PARAM_STR);
-        $stmt->bindValue(4, $phone, PDO::PARAM_STR);
-        $stmt->bindValue(5, $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $sql = "UPDATE users 
+                SET first_name = :first_name, last_name = :last_name, email = :email, phone = :phone 
+                WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            ':id' => $id,
+            ':first_name' => $first_name,
+            ':last_name' => $last_name,
+            ':email' => $email,
+            ':phone' => $phone
+        ]);
     }
 
+    // Delete user
     public function deleteUser($id)
     {
-        global $conn;
-        $sql = "DELETE FROM users WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(1, $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $sql = "DELETE FROM users WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([':id' => $id]);
     }
 
-    public function searchUser($searchTerm)
+    // Search users
+    public function searchUser($term)
     {
-        global $conn;
-        $searchTerm = "%" . $searchTerm . "%";
-        $sql = "SELECT * FROM users WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR phone LIKE ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(1, $searchTerm, PDO::PARAM_STR);
-        $stmt->bindValue(2, $searchTerm, PDO::PARAM_STR);
-        $stmt->bindValue(3, $searchTerm, PDO::PARAM_STR);
-        $stmt->bindValue(4, $searchTerm, PDO::PARAM_STR);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all rows as an associative array
-        return $result;
+        $term = "%" . $term . "%";
+        $sql = "SELECT * FROM users 
+                WHERE first_name LIKE :term OR last_name LIKE :term OR email LIKE :term OR phone LIKE :term";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':term' => $term]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-?>
