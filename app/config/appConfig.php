@@ -2,6 +2,7 @@
 function loadEnv($path)
 {
     if (!file_exists($path)) {
+        echo "Error: .env file not found at $path\n";
         return;
     }
 
@@ -13,11 +14,13 @@ function loadEnv($path)
         list($name, $value) = explode('=', $line, 2);
         $name = trim($name);
         $value = trim($value);
-        
+        putenv($name . '=' . $value); // Set environment variable
+        $_ENV[$name] = $value; // Also set in $_ENV superglobal
+        $_SERVER[$name] = $value; // Also set in $_SERVER superglobal
     }
 }
 
 // Load environment variables from .env file
-loadEnv(dirname(__DIR__,2 ) . '/.env');
+loadEnv(dirname(__DIR__, 2) . '/.env');
 
 ?>

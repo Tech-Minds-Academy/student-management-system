@@ -3,7 +3,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
+require_once dirname(__DIR__, 1) . '/config/database.php';
 require_once dirname(__DIR__, 1) . '/models/User.php';
 
 
@@ -13,37 +13,80 @@ class AuthController
 
     public function __construct()
     {
-        $this->userModel = new UserModel();
+        $db = new Database();
+        $conn = $db->getConnection();
+        $this->userModel = new UserModel($conn);
     }
 
-    public function register($first_name, $last_name, $email, $phone, $password, $role = 'user') {
-        $password = password_hash($password, PASSWORD_DEFAULT);
-        return $this->userModel->createUser($first_name, $last_name, $email, $phone, $password, $role) ? 
-            "User registered successfully!" : "Error: Could not register user.";
-    }
-
-    public function login($email, $password)
+    public function register()
     {
-        $user = $this->userModel->login($email, $password);
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
+            $last_name = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
+            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+            $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
+            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+            $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
+            $role = $role ?: 'user'; // Default to 'user' if not provided
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['first_name'] = $user['first_name'];
-            $_SESSION['last_name'] = $user['last_name'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['phone'] = $user['phone'];
-            $_SESSION['role'] = $user['role']; // Store the user's role in the session
-            header("Location: ../views/user/profile.php");
-            exit();
+            // $password = password_hash($password, PASSWORD_DEFAULT);
+            $newUser = $this->userModel->createUser($first_name, $last_name, $email, $phone, $password, $role);
+            echo "new user" . $newUser;
+            if ($newUser) {
+                // redirect to login
+                Header("Location: /login"); // Redirect to the login page
+            } else {
+                return;
+            }
         } else {
-            return "Invalid email or password!";
+            require_once dirname(__DIR__, 1) . '/views/auth/register.php';
+        }
+    }
+
+    public function login()
+    {
+    session_start();
+
+        // Example after verifying login credentials
+    $_SESSION['first_name'] = $first_name['id']; // Store the logged-in user's ID
+        header("Location: /profile");
+    exit();
+
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+
+            if (empty($email) || empty($password)) {
+                echo "Email and password are required!";
+            }
+
+            $user = $this->userModel->checkLoginDetails($email, $password);
+        
+
+            if ($user) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['first_name'] = $user['first_name'];
+                $_SESSION['last_name'] = $user['last_name'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['phone'] = $user['phone'];
+                $_SESSION['role'] = $user['role']; // Store the user's role in the session
+                header("Location: /profile"); // Redirect to the profile page
+                // header("Location: /views/profile.php"); // Redirect to the profile page
+                exit();
+            } else {
+                require_once dirname(__DIR__, 1) . '/views/auth/login.php';
+                $error_message = "Invalid email or password!";
+            }
+        } else {
+            require_once dirname(__DIR__, 1) . '/views/auth/login.php';
+
         }
     }
 
     public function logout()
     {
         session_destroy();
-        header("Location: ../views/login.php");
+        header("Location: /login    ");
         // header("Location: /login"); // Redirect to the login page
         exit();
     }

@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php
-include dirname(__DIR__, 2) . '/includes/header.php';
-?>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/app/assets/css/styles.css">
+</head>
 
 <body>
     <div class="form-wrapper">
@@ -11,7 +14,7 @@ include dirname(__DIR__, 2) . '/includes/header.php';
             <p class="subtitle">Please enter your details to sign in</p>
         </div>
 
-        <form>
+        <form action="/login" method="POST">            
             <div class="input-wrapper">
                 <input type="email" id="email" name="email" class="input" placeholder=" " required>
                 <label for="email" class="label">Email address</label>
@@ -40,7 +43,7 @@ include dirname(__DIR__, 2) . '/includes/header.php';
         </form>
 
         <p class="signup">
-            Don't have an account? <a href="../../views/auth/register.php">Register</a>
+            Don't have an account? <a href="/register">Register</a>
         </p>
     </div>
 </body>
