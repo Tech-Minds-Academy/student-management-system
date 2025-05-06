@@ -62,6 +62,7 @@ class UserModel
         }
     }
 
+    
     // Get user by email (for login)
     public function getUserByEmail($email)
     {

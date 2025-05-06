@@ -44,12 +44,12 @@ class AuthController
 
     public function login()
     {
-    session_start();
 
-        // Example after verifying login credentials
-    $_SESSION['first_name'] = $first_name['id']; // Store the logged-in user's ID
-        header("Location: /profile");
-    exit();
+        if (isset($_SESSION['user_id'])) {
+            // User is already logged in, redirect to profile page
+            header("Location: /profile");
+            exit();
+        }
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
@@ -85,15 +85,17 @@ class AuthController
     public function logout()
     {
         session_destroy();
-        header("Location: /login    ");
-        // header("Location: /login"); // Redirect to the login page
+        // wipe history so user can't go back
+        
+        header("Location: /login", true,302);
         exit();
+
     }
 
     public function getAllUser()
     {
         try {
-            $users = $this->userModel->getAllUser();
+            $users = $this->userModel->getAllUsers();
             return $users ? $users : "Error: Could not retrieve the list of users.";
         } catch (Exception $e) {
             return "Error: " . $e->getMessage();
