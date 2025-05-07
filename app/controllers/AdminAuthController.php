@@ -60,7 +60,7 @@ class AdminAuthController {
     }
 
     // Fetch all users from the UserModel
-    return $this->userModel->getAllUser();
+    return $this->userModel->getAllUsers();
 }
 
     // Register a new user
