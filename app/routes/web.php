@@ -13,7 +13,6 @@ $router->addRoute('/register', 'AuthController@register');
 
 // User routes - the user profile page
 $router->addRoute('/profile', 'UserController@profile');
-$router->addRoute('/dashboard', 'UserController@dashboard');
 
 // Admin routes - the admin dashboard page
 $router->addRoute('/admin/dashboard', 'AdminAuthController@dashboard');

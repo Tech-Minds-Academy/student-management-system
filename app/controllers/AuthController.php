@@ -6,7 +6,6 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once dirname(__DIR__, 1) . '/config/database.php';
 require_once dirname(__DIR__, 1) . '/models/User.php';
 
-
 class AuthController
 {
     private $userModel;
@@ -45,12 +44,12 @@ class AuthController
 
     public function login()
     {
-    session_start();
 
-        // Example after verifying login credentials
-    $_SESSION['first_name'] = $first_name['id']; // Store the logged-in user's ID
-        header("Location: /profile");
-    exit();
+        if (isset($_SESSION['user_id'])) {
+            // User is already logged in, redirect to profile page
+            header("Location: /profile");
+            exit();
+        }
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
@@ -86,28 +85,41 @@ class AuthController
     public function logout()
     {
         session_destroy();
-        header("Location: /login    ");
-        // header("Location: /login"); // Redirect to the login page
+        // wipe history so user can't go back
+        
+        header("Location: /login", true,302);
         exit();
+
     }
 
-    // Corrected getAllUser method
     public function getAllUser()
     {
-        $users = $this->userModel->getAllUser();
-        return $users ? $users : "Error: Could not retrieve the list of users.";
+        try {
+            $users = $this->userModel->getAllUsers();
+            return $users ? $users : "Error: Could not retrieve the list of users.";
+        } catch (Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
     }
 
     public function updateUser($id, $first_name, $last_name, $email, $phone)
     {
-        return $this->userModel->updateUser($id, $first_name, $last_name, $email, $phone) ?
-            "User updated successfully!" : "Error: Could not update user.";
+        try {
+            return $this->userModel->updateUser($id, $first_name, $last_name, $email, $phone) ? 
+                "User updated successfully!" : "Error: Could not update user.";
+        } catch (Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
     }
 
     public function deleteUser($id)
     {
-        return $this->userModel->deleteUser($id) ?
-            "User deleted successfully!" : "Error: Could not delete user.";
+        try {
+            return $this->userModel->deleteUser($id) ? 
+                "User deleted successfully!" : "Error: Could not delete user.";
+        } catch (Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
     }
 }
 ?>
