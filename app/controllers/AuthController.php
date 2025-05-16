@@ -45,12 +45,7 @@ class AuthController
 
     public function login()
     {
-    session_start();
-
-        // Example after verifying login credentials
-    $_SESSION['first_name'] = $first_name['id']; // Store the logged-in user's ID
-        header("Location: /profile");
-    exit();
+    
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
@@ -82,7 +77,6 @@ class AuthController
 
         }
     }
-
     public function logout()
     {
         session_destroy();
@@ -94,7 +88,7 @@ class AuthController
     // Corrected getAllUser method
     public function getAllUser()
     {
-        $users = $this->userModel->getAllUser();
+        $users = $this->userModel->getAllUsers();
         return $users ? $users : "Error: Could not retrieve the list of users.";
     }
 
