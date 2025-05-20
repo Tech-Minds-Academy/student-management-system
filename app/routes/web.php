@@ -8,6 +8,8 @@ $router->addRoute('/home', 'MainController@index');
 $router->addRoute('/about', 'MainController@about');
 // The login page
 $router->addRoute('/login', 'AuthController@login');
+// The Admin login page
+$router->addRoute('/adminLogin', 'AdminAuthController@login');
 // The registration page
 $router->addRoute('/register', 'AuthController@register');
 

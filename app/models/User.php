@@ -30,19 +30,26 @@ class UserModel
     }
 
     public function checkLoginDetails($email, $password)
-    {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
-        $stmt->execute([':email' => $email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+{
+    $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($password == $user['password']) {
-            echo "<div style='color: green; font-weight: bold;'>✅ Login successful!</div><br>";
-            return $user;
-        } else {
-            echo "<script>alert('❌ Invalid password!');</script>";
-            return null; // Return null if login fails
-        }
+    // Check if the user exists
+    if (!$user) {
+        echo "<script>alert('❌ User not found!');</script>";
+        return null; // Return null if no user is found
     }
+
+    // Check if the password matches
+    if ($password == $user['password']) {
+        echo "<div style='color: green; font-weight: bold;'>✅ Login successful!</div><br>";
+        return $user;
+    } else {
+        echo "<script>alert('❌ Invalid password!');</script>";
+        return null; // Return null if the password is incorrect
+    }
+}
 
 
     public function checkLoginDetails_($email, $password)
