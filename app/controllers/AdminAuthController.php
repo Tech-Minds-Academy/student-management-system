@@ -3,74 +3,97 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-// Include the User model
-require_once __DIR__ . '/../models/User.php';
+// Include the Database and User model
+require_once dirname(__DIR__, 1) . '/config/database.php';
+require_once dirname(__DIR__, 1) . '/models/User.php';
 
-class AdminAuthController {
+class AdminAuthController
+{
     private $userModel;
 
-    // Initialize the User model
-    public function __construct() {
-        $this->userModel = new UserModel(); // Create an instance of the UserModel class
+    // Initialize the User model with DB connection
+    public function __construct()
+    {
+        $db = new Database();
+        $conn = $db->getConnection();
+        $this->userModel = new UserModel($conn); // Pass $conn here!
     }
 
     // Login function
-    public function login($email, $password) {
-        $user = $this->userModel->login($email, $password);
-
-        if ($user && password_verify($password, $user['password'])) {
-            // Check if the user role is admin before allowing access to the dashboard
-            if ($user['role'] == 'admin') {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['first_name'] = $user['first_name'];
-                $_SESSION['last_name'] = $user['last_name'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['phone'] = $user['phone'];
-                $_SESSION['role'] = $user['role']; // Store the user's role in the session
-                header("Location: ../views/admin/dashboard.php");
+    public function login()
+    {
+        $error = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            if (empty($email) || empty($password)) {
+                $error = "Email and password are required!";
             } else {
-                return "You are not authorized to access this page!";
+
+                $user = $this->userModel->login($email);
+                echo "<script>alert('User: " . json_encode($user) . "');</script>";
+                // Check if the user exists and verify the password
+                // Check if the user is an admin
+
             }
-            exit();
-        } else {
-            return "Invalid email or password!";
+            if (empty($user) || $user['role'] !== 'admin') {
+                $error = "User not found or unauthorized!";
+                // } elseif ($user && password_verify($password, $user['password'])) {
+            } elseif ($user && $user['password'] === $password) {
+                // Set session variables
+                $_SESSION['email'] = $email;
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['id'] = $user['id'];
+                // Redirect to the admin dashboard
+                header("Location: /admin/dashboard");
+                exit();
+            } else {
+                $error = "Invalid email or password!";
+            }
         }
+        include dirname(__DIR__, 1) . '/views/auth/admin/login.php';
     }
 
-    public function logout() {
+
+    public function logout()
+    {
         session_destroy();
         header("Location: ../views/login.php");
         exit();
     }
 
     // Admin dashboard
-    public function dashboard() {
+    public function dashboard()
+    {
+        if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
+            header("Location: /login");
+            exit();
+        }
+        include dirname(__DIR__, 1) . '/views/admin/dashboard.php';
+    }
+
+    // List all users
+    public function getAllUser()
+    {
         if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
             header("Location: ../views/login.php");
             exit();
         }
-        include __DIR__ . '/../views/admin/dashboard.php';
-    }
 
-    // List all users
-   public function getAllUser() {
-    if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
-        header("Location: ../views/login.php");
-        exit();
+        // Fetch all users from the UserModel
+        return $this->userModel->getAllUser();
     }
-
-    // Fetch all users from the UserModel
-    return $this->userModel->getAllUser();
-}
 
     // Register a new user
-    public function register($first_name, $last_name, $email, $phone, $password, $role) {
+    public function register($first_name, $last_name, $email, $phone, $password, $role)
+    {
         return $this->userModel->createUser($first_name, $last_name, $email, $phone, $password, $role) ?
             "User registered successfully!" : "Error: Could not register user.";
     }
 
     // Create a new user
-    public function createUser() {
+    public function createUser()
+    {
         if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
             header("Location: ../views/login.php");
             exit();
@@ -91,7 +114,8 @@ class AdminAuthController {
     }
 
     // Update an existing user
-    public function updateUser() {
+    public function updateUser()
+    {
         if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
             header("Location: ../views/login.php");
             exit();
@@ -104,26 +128,28 @@ class AdminAuthController {
             $last_name = $_POST['last_name'];
             $email = $_POST['email'];
             $phone = $_POST['phone'];
-        return $this->userModel->updateUser($id, $first_name, $last_name, $email, $phone) ?
+            return $this->userModel->updateUser($id, $first_name, $last_name, $email, $phone) ?
                 "User updated successfully!" : "Error: Could not update user.";
         }
         include __DIR__ . '/../views/admin/update-user.php';
     }
 
     // Delete a user
-    public function deleteUser($id) {
+    public function deleteUser($id)
+    {
         if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
             header("Location: ../views/login.php");
             exit();
         }
-    
+
         // Call the UserModel's deleteUser method and return a message
         return $this->userModel->deleteUser($id) ?
             "User deleted successfully!" : "Error: Could not delete user.";
     }
 
     // Search for users
-    public function searchUser() { 
+    public function searchUser()
+    {
         if (!isset($_SESSION['email']) || $_SESSION['role'] != 'admin') {
             header("Location: ../views/login.php");
             exit();
@@ -132,7 +158,7 @@ class AdminAuthController {
         $users = []; // Initialize the users array
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $searchTerm = $_POST['search'];
-        return $this->userModel->searchUser($searchTerm);
+            return $this->userModel->searchUser($searchTerm);
         }
         include __DIR__ . '/../views/admin/search-user.php';
     }

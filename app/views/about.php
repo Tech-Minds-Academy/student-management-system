@@ -484,7 +484,7 @@
                     
                     <div class="team-member">
                         <div class="member-avatar">
-                            <img src="/app/assets/images/dev-jay.jpg" alt="dev Godfrey">
+                            <img src="" alt="dev Godfrey">
                         </div>
                         <h3 class="member-name">Dev Godfrey-julius</h3>
                         <p class="member-role">Lead Back-Developer</p>

@@ -28,6 +28,12 @@ class UserModel
             ':role' => $role
         ]);
     }
+    public function login($email, $password = null) {
+    $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $user ?: null;
+}
 
     public function checkLoginDetails($email, $password)
 {
